@@ -80,20 +80,32 @@ alternating_sum:
     .globl recursive_power
     .type recursive_power, @function
 recursive_power:
-    # TODO: Problem 5
-    movq $0, %rax
+    pushq %rbp
+    movq %rsp, %rbp
+    movq $1, %rax
     cmpq $0, %rsi
-    je base_case:
-    
-    base_case:
-        movq $1, %rax
+    jle recursive_power_done
+    pushq %rdi
+    subq $1, %rsi
+    call recursive_power
+    imulq -8(%rbp), %rax
+    recursive_power_done:
+        leave
         ret
 
     .globl combine_helpers
     .type combine_helpers, @function
 combine_helpers:
-    # TODO: Problem 6
-    movq $0, %rax
+    pushq %rbp
+    movq %rsp, %rbp
+    subq $16, %rsp
+    movq %rsi, -8(%rbp)
+    call helper_square
+    movq %rax, -16(%rbp)
+    movq -8(%rbp), %rdi
+    call helper_affine
+    addq -16(%rbp), %rax
+    leave
     ret
 
     .section .note.GNU-stack,"",@progbits
